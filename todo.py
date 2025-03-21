@@ -24,7 +24,7 @@ def add(args, task_data):
 
     # Write changes to JSON file
     with open("tasks.json", "w") as f:
-        json_string = json.dumps(task_data) # Convert in memory dict to JSON string
+        json_string = json.dumps(task_data, indent=4) # Convert in memory dict to JSON string
         f.write(json_string)
 
 commands = {

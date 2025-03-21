@@ -21,7 +21,11 @@ def add(args, task_data):
     # Update next ID, and the task list in memory
     task_data["next_id"] = task_data["next_id"] + 1
     task_data["tasks"].append(new_task)
-    print(task_data["tasks"])
+
+    # Write changes to JSON file
+    with open("tasks.json", "w") as f:
+        json_string = json.dumps(task_data) # Convert in memory dict to JSON string
+        f.write(json_string)
 
 commands = {
     "add": add

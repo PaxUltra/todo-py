@@ -12,9 +12,18 @@ def update_json_file(task_data):
         f.write(json_string)
 
 ## Commands
+
+# Add a task
 def add(args, task_data):
-    name = args[1] # If the command is add, the name will be the second argument
-    description = args[2] # Third argument should be description 
+    # If the command is add, the name will be the second argument
+    # If no name is provided, stop execution
+    try:
+        name = args[1]
+    except IndexError:
+        print("Name is a required argument to add a task.")
+        return
+    
+    description = args[2] if len(args) >= 3 else "" # Third argument should be description 
     id = task_data["next_id"]
     now = datetime.now() # Current date/time
     timestamp_str = now.strftime("%Y-%m-%d %H:%M:%S") # YYYY-MM-DD HH:MM:SS
@@ -33,6 +42,10 @@ def add(args, task_data):
 
     # Write changes to JSON file
     update_json_file(task_data)
+
+    print(f"Task added successfully (ID: {id})")
+
+    return
 
 commands = {
     "add": add
@@ -67,8 +80,6 @@ if command in commands:
     commands[command](args, task_data)
 else:
     print("Error: Command not found.")
-
-## Add a task
 
 ## Update a task
 

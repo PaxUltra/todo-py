@@ -98,6 +98,9 @@ def update(args, task_data):
 
     if task:
         task["description"] = args[2]
+        now = datetime.now() # Current date/time
+        timestamp_str = now.strftime("%Y-%m-%d %H:%M:%S") # YYYY-MM-DD HH:MM:SS
+        task["updated_at"] = timestamp_str
         update_json_file(task_data)
         print(f"\nUpdated task ID {args[1]}.")
     else:
@@ -118,6 +121,9 @@ def markInProgress(args, task_data):
 
     if task:
         task["status"] = "in-progress"
+        now = datetime.now() # Current date/time
+        timestamp_str = now.strftime("%Y-%m-%d %H:%M:%S") # YYYY-MM-DD HH:MM:SS
+        task["updated_at"] = timestamp_str
         update_json_file(task_data)
         print(f"\nTask ID {args[1]} set to in-progress.")
     else:
@@ -138,6 +144,9 @@ def markDone(args, task_data):
 
     if task:
         task["status"] = "done"
+        now = datetime.now() # Current date/time
+        timestamp_str = now.strftime("%Y-%m-%d %H:%M:%S") # YYYY-MM-DD HH:MM:SS
+        task["updated_at"] = timestamp_str
         update_json_file(task_data)
         print(f"\nTask ID {args[1]} set to done.")
     else:
@@ -203,5 +212,3 @@ if command in commands:
     commands[command](args, task_data)
 else:
     print("Error: Command not found.")
-
-## Delete a task

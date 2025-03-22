@@ -21,6 +21,9 @@ def print_task_list(task_list):
             print(f'Created At: {task["created_at"]}')
             print(f'Updated At: {task["updated_at"]}')
 
+def find_task_by_id(id, task_data):
+    return next((t for t in task_data["tasks"] if str(t["id"]) == str(id)), None)
+
 ## Commands
 
 # Add a task
@@ -91,7 +94,7 @@ def update(args, task_data):
     
     # Find the task with the matching ID
     # Return None if no value is found
-    task = next((t for t in task_data["tasks"] if str(t["id"]) == str(args[1])), None)
+    task = find_task_by_id(args[1], task_data)
 
     if task:
         task["description"] = args[2]
@@ -111,7 +114,7 @@ def markInProgress(args, task_data):
     
     # Find the task with the matching ID
     # Return None if no value is found
-    task = next((t for t in task_data["tasks"] if str(t["id"]) == str(args[1])), None)
+    task = find_task_by_id(args[1], task_data)
 
     if task:
         task["status"] = "in-progress"
@@ -131,7 +134,7 @@ def markDone(args, task_data):
     
     # Find the task with the matching ID
     # Return None if no value is found
-    task = next((t for t in task_data["tasks"] if str(t["id"]) == str(args[1])), None)
+    task = find_task_by_id(args[1], task_data)
 
     if task:
         task["status"] = "done"

@@ -24,6 +24,9 @@ def print_task_list(task_list):
 def find_task_by_id(id, task_data):
     return next((t for t in task_data["tasks"] if str(t["id"]) == str(id)), None)
 
+def current_timestamp():
+    return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
 ## Commands
 
 # Add a task
@@ -38,15 +41,13 @@ def add(args, task_data):
     
     description = args[2] if len(args) >= 3 else "" # Third argument should be description 
     id = task_data["next_id"]
-    now = datetime.now() # Current date/time
-    timestamp_str = now.strftime("%Y-%m-%d %H:%M:%S") # YYYY-MM-DD HH:MM:SS
     new_task = {
         "id": id,
         "name": name,
         "description": description,
         "status": "todo",
-        "created_at": timestamp_str,
-        "updated_at": timestamp_str
+        "created_at": current_timestamp(),
+        "updated_at": current_timestamp()
     }
 
     # Update next ID, and the task list in memory
@@ -98,9 +99,7 @@ def update(args, task_data):
 
     if task:
         task["description"] = args[2]
-        now = datetime.now() # Current date/time
-        timestamp_str = now.strftime("%Y-%m-%d %H:%M:%S") # YYYY-MM-DD HH:MM:SS
-        task["updated_at"] = timestamp_str
+        task["updated_at"] = current_timestamp()
         update_json_file(task_data)
         print(f"\nUpdated task ID {args[1]}.")
     else:
@@ -121,9 +120,7 @@ def markInProgress(args, task_data):
 
     if task:
         task["status"] = "in-progress"
-        now = datetime.now() # Current date/time
-        timestamp_str = now.strftime("%Y-%m-%d %H:%M:%S") # YYYY-MM-DD HH:MM:SS
-        task["updated_at"] = timestamp_str
+        task["updated_at"] = current_timestamp()
         update_json_file(task_data)
         print(f"\nTask ID {args[1]} set to in-progress.")
     else:
@@ -144,9 +141,7 @@ def markDone(args, task_data):
 
     if task:
         task["status"] = "done"
-        now = datetime.now() # Current date/time
-        timestamp_str = now.strftime("%Y-%m-%d %H:%M:%S") # YYYY-MM-DD HH:MM:SS
-        task["updated_at"] = timestamp_str
+        task["updated_at"] = current_timestamp()
         update_json_file(task_data)
         print(f"\nTask ID {args[1]} set to done.")
     else:

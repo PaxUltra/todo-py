@@ -39,16 +39,24 @@ commands = {
 }
 
 ## Create/open task list JSON file, and read the contents
-with open(TASKS_FILE, "a+") as f:
-    task_string = f.read() # Read the entire file into a variable as a string
-    # Verify that the json file is not empty
-    if task_string != "":
-        task_data = json.loads(task_string) # Convert JSON string into a dict
-    else:
+try:
+    with open(TASKS_FILE, "r") as f:
+        task_string = f.read() # Read the entire file into a variable as a string
+        # Verify that the json file is not empty
+        if task_string != "":
+            task_data = json.loads(task_string) # Convert JSON string into a dict
+        else:
+            task_data = {
+                "next_id": 1, # Reset the next ID
+                "tasks": [] # If no task list exists, create an empty list
+            }
+except FileNotFoundError:
+    with open(TASKS_FILE, "w"):
         task_data = {
-            "next_id": 1, # Reset the next ID
-            "tasks": [] # If no task list exists, create an empty list
-        }
+                "next_id": 1, # Reset the next ID
+                "tasks": [] # If no task list exists, create an empty list
+            }
+        update_json_file(task_data)
 
 ## Accept user command line arguments
 args = sys.argv[1:] # sys.argv[0] is the script name. Arguments start at index 1

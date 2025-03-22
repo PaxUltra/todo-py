@@ -11,6 +11,16 @@ def update_json_file(task_data):
         json_string = json.dumps(task_data, indent=4) # Convert in memory dict to JSON string
         f.write(json_string)
 
+def print_task_list(task_list):
+    for task in task_list:
+            print()
+            print(f'ID: {task["id"]}')
+            print(f'Name: {task["name"]}')
+            print(f'Description: {task["description"]}')
+            print(f'Status: {task["status"]}')
+            print(f'Created At: {task["created_at"]}')
+            print(f'Updated At: {task["updated_at"]}')
+
 ## Commands
 
 # Add a task
@@ -43,12 +53,35 @@ def add(args, task_data):
     # Write changes to JSON file
     update_json_file(task_data)
 
-    print(f"Task added successfully (ID: {id})")
+    print(f"\nTask added successfully (ID: {id})")
+
+    return
+
+# List tasks
+def list(args, task_data):
+    # If no arguments are provided, list all tasks
+    if len(args) < 2:
+        print_task_list(task_data["tasks"])
+    elif args[1] == "todo":
+        # Filter todo tasks
+        filtered_tasks = [task for task in task_data["tasks"] if task["status"] == "todo"]
+        print_task_list(filtered_tasks)
+    elif args[1] == "done":
+        # Filter done tasks
+        filtered_tasks = [task for task in task_data["tasks"] if task["status"] == "done"]
+        print_task_list(filtered_tasks)
+    elif args[1] == "in-progress":
+        # Filter in-progress tasks
+        filtered_tasks = [task for task in task_data["tasks"] if task["status"] == "in-progress"]
+        print_task_list(filtered_tasks)
+    else:
+        print("\nStatus must be either todo, done, or in-progress.")
 
     return
 
 commands = {
-    "add": add
+    "add": add,
+    "list": list
 }
 
 ## Create/open task list JSON file, and read the contents

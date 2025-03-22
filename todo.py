@@ -79,9 +79,33 @@ def list(args, task_data):
 
     return
 
+# Update task description
+def update(args, task_data):
+    # Verify that ID and description arguments are present and valid
+    if len(args) < 3:
+        print("\nTask ID and new description are required arguments.")
+        return
+    elif not (args[1]).isdigit():
+        print("\nTask ID must be an integer.")
+        return
+    
+    # Find the task with the matching ID
+    # Return None if no value is found
+    task = next((t for t in task_data["tasks"] if t["id"] == int(args[1])), None)
+
+    if task:
+        task["description"] = args[2]
+        update_json_file(task_data)
+        print(f"\nUpdated task ID {args[1]}.")
+    else:
+        print("\nTask ID not found.")
+    
+    return
+
 commands = {
     "add": add,
-    "list": list
+    "list": list,
+    "update": update
 }
 
 ## Create/open task list JSON file, and read the contents

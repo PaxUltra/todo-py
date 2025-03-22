@@ -2,6 +2,15 @@ import sys # For accepting command line arguments
 import json
 from datetime import datetime
 
+## Constants
+TASKS_FILE = "tasks.json"
+
+## Helper functions
+def update_json_file(task_data):
+    with open(TASKS_FILE, "w") as f:
+        json_string = json.dumps(task_data, indent=4) # Convert in memory dict to JSON string
+        f.write(json_string)
+
 ## Commands
 def add(args, task_data):
     name = args[1] # If the command is add, the name will be the second argument
@@ -23,17 +32,14 @@ def add(args, task_data):
     task_data["tasks"].append(new_task)
 
     # Write changes to JSON file
-    with open("tasks.json", "w") as f:
-        json_string = json.dumps(task_data, indent=4) # Convert in memory dict to JSON string
-        f.write(json_string)
+    update_json_file(task_data)
 
 commands = {
     "add": add
 }
 
 ## Create/open task list JSON file, and read the contents
-tasks_file = "tasks.json"
-with open(tasks_file, "a+") as f:
+with open(TASKS_FILE, "a+") as f:
     task_string = f.read() # Read the entire file into a variable as a string
     # Verify that the json file is not empty
     if task_string != "":

@@ -91,7 +91,7 @@ def update(args, task_data):
     
     # Find the task with the matching ID
     # Return None if no value is found
-    task = next((t for t in task_data["tasks"] if t["id"] == int(args[1])), None)
+    task = next((t for t in task_data["tasks"] if str(t["id"]) == str(args[1])), None)
 
     if task:
         task["description"] = args[2]
@@ -111,7 +111,7 @@ def markInProgress(args, task_data):
     
     # Find the task with the matching ID
     # Return None if no value is found
-    task = next((t for t in task_data["tasks"] if t["id"] == int(args[1])), None)
+    task = next((t for t in task_data["tasks"] if str(t["id"]) == str(args[1])), None)
 
     if task:
         task["status"] = "in-progress"
@@ -122,11 +122,32 @@ def markInProgress(args, task_data):
 
     return
 
+# Mark task as done
+def markDone(args, task_data):
+    # Task ID is required
+    if len(args) < 2:
+        print("\nTask ID is a required argument.")
+        return
+    
+    # Find the task with the matching ID
+    # Return None if no value is found
+    task = next((t for t in task_data["tasks"] if str(t["id"]) == str(args[1])), None)
+
+    if task:
+        task["status"] = "done"
+        update_json_file(task_data)
+        print(f"\nTask ID {args[1]} set to done.")
+    else:
+        print("\nTask ID not found.")
+
+    return
+
 commands = {
     "add": add,
     "list": list,
     "update": update,
-    "mark-in-progress": markInProgress
+    "mark-in-progress": markInProgress,
+    "mark-done": markDone
 }
 
 ## Create/open task list JSON file, and read the contents

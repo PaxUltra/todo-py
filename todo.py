@@ -61,7 +61,7 @@ def add(args, task_data):
     return
 
 # List tasks
-def list(args, task_data):
+def list_tasks(args, task_data):
     valid_statuses = {"todo", "done", "in-progress"}
     status_filter = args[1] if len(args) > 1 else None
 
@@ -170,7 +170,7 @@ def delete(args, task_data):
 
 commands = {
     "add": add,
-    "list": list,
+    "list": list_tasks,
     "update": update,
     "mark-in-progress": mark_in_progress,
     "mark-done": mark_done,

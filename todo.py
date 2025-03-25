@@ -39,7 +39,7 @@ def add(args, task_data):
         return
     
     description = args[2] if len(args) >= 3 else "" # Third argument should be description 
-    id = task_data["next_id"]
+    id = task_data.get("next_id", 1)
     new_task = {
         "id": id,
         "name": name,
@@ -62,20 +62,14 @@ def add(args, task_data):
 
 # List tasks
 def list(args, task_data):
+    valid_statuses = {"todo", "done", "in-progress"}
+    status_filter = args[1] if len(args) > 1 else None
+
     # If no arguments are provided, list all tasks
-    if len(args) < 2:
+    if status_filter is None:
         print_task_list(task_data["tasks"])
-    elif args[1] == "todo":
-        # Filter todo tasks
-        filtered_tasks = [task for task in task_data["tasks"] if task["status"] == "todo"]
-        print_task_list(filtered_tasks)
-    elif args[1] == "done":
-        # Filter done tasks
-        filtered_tasks = [task for task in task_data["tasks"] if task["status"] == "done"]
-        print_task_list(filtered_tasks)
-    elif args[1] == "in-progress":
-        # Filter in-progress tasks
-        filtered_tasks = [task for task in task_data["tasks"] if task["status"] == "in-progress"]
+    elif status_filter in valid_statuses:
+        filtered_tasks = [task for task in task_data["tasks"] if task["status"] == status_filter]
         print_task_list(filtered_tasks)
     else:
         print("\nStatus must be either todo, done, or in-progress.")
@@ -110,7 +104,7 @@ def update(args, task_data):
     return
 
 # Mark task as in-progress
-def markInProgress(args, task_data):
+def mark_in_progress(args, task_data):
     # Task ID is required
     task_id = args[1] if len(args) > 1 else None
     if not task_id:
@@ -132,7 +126,7 @@ def markInProgress(args, task_data):
     return
 
 # Mark task as done
-def markDone(args, task_data):
+def mark_done(args, task_data):
     # Task ID is required
     task_id = args[1] if len(args) > 1 else None
     if not task_id:
@@ -178,8 +172,8 @@ commands = {
     "add": add,
     "list": list,
     "update": update,
-    "mark-in-progress": markInProgress,
-    "mark-done": markDone,
+    "mark-in-progress": mark_in_progress,
+    "mark-done": mark_done,
     "delete": delete
 }
 
@@ -196,10 +190,10 @@ except FileNotFoundError:
 
 ## Accept user command line arguments
 args = sys.argv[1:] # sys.argv[0] is the script name. Arguments start at index 1
-command = args[0] # The command will always be the first argument
+command = args[0] if args else None # The command will always be the first argument
 
 # Make sure the command exists
-if command in commands:
-    commands[command](args, task_data)
+if not command or command not in commands:
+    print("\nError: Command not found.")
 else:
-    print("Error: Command not found.")
+    commands[command](args, task_data)

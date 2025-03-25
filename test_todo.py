@@ -7,12 +7,26 @@ class TestTodoFunctions(unittest.TestCase):
         self.task_data = {"next_id": 1, "tasks": []}
 
     def test_add_task(self):
+        # If a task name is not provided, task_data should not grow
+        args = ["add"]
+        add(args, self.task_data)
+        self.assertEqual(len(self.task_data["tasks"]), 0)
+
+        # Add a full task
         args = ["add", "Test Task", "This is a test."]
         add(args, self.task_data)
-
         self.assertEqual(len(self.task_data["tasks"]), 1)
         self.assertEqual(self.task_data["tasks"][0]["name"], "Test Task")
+        self.assertEqual(self.task_data["tasks"][0]["description"], "This is a test.")
         self.assertEqual(self.task_data["tasks"][0]["status"], "todo")
+
+        # Add task without description
+        args = ["add", "Test Task 2"]
+        add(args, self.task_data)
+        self.assertEqual(len(self.task_data["tasks"]), 2)
+        self.assertEqual(self.task_data["tasks"][1]["name"], "Test Task 2")
+        self.assertEqual(self.task_data["tasks"][1]["description"], "")
+        self.assertEqual(self.task_data["tasks"][1]["status"], "todo")
 
     def test_update_task(self):
         args_add = ["add", "Task to Update", "Old Description"]

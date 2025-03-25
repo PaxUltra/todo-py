@@ -177,23 +177,24 @@ commands = {
     "delete": delete
 }
 
-## Create/open task list JSON file, and read the contents
-try:
-    with open(TASKS_FILE, "r") as f:
-        # Read the entire file into a variable as a string
-        task_string = f.read().strip()
-        # Verify that the json file is not empty, and reset it if it is
-        task_data = json.loads(task_string) if task_string else {"next_id": 1, "tasks": []}
-except FileNotFoundError:
-    task_data = {"next_id": 1, "tasks": []}
-    update_json_file(task_data)
+if __name__ == "__main__":
+    ## Create/open task list JSON file, and read the contents
+    try:
+        with open(TASKS_FILE, "r") as f:
+            # Read the entire file into a variable as a string
+            task_string = f.read().strip()
+            # Verify that the json file is not empty, and reset it if it is
+            task_data = json.loads(task_string) if task_string else {"next_id": 1, "tasks": []}
+    except FileNotFoundError:
+        task_data = {"next_id": 1, "tasks": []}
+        update_json_file(task_data)
 
-## Accept user command line arguments
-args = sys.argv[1:] # sys.argv[0] is the script name. Arguments start at index 1
-command = args[0] if args else None # The command will always be the first argument
+    ## Accept user command line arguments
+    args = sys.argv[1:] # sys.argv[0] is the script name. Arguments start at index 1
+    command = args[0] if args else None # The command will always be the first argument
 
-# Make sure the command exists
-if not command or command not in commands:
-    print("\nError: Command not found.")
-else:
-    commands[command](args, task_data)
+    # Make sure the command exists
+    if not command or command not in commands:
+        print("\nError: Command not found.")
+    else:
+        commands[command](args, task_data)

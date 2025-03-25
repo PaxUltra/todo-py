@@ -22,7 +22,7 @@ def print_task_list(task_list):
             print(f'Updated At: {task["updated_at"]}')
 
 def find_task_by_id(id, task_data):
-    return next((t for t in task_data["tasks"] if str(t["id"]) == str(id)), None)
+    return next((t for t in task_data.get("tasks", []) if str(t["id"]) == str(id)), None)
 
 def current_timestamp():
     return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -33,9 +33,8 @@ def current_timestamp():
 def add(args, task_data):
     # If the command is add, the name will be the second argument
     # If no name is provided, stop execution
-    try:
-        name = args[1]
-    except IndexError:
+    name = args[1] if len(args) > 1 else None
+    if not name:
         print("Name is a required argument to add a task.")
         return
     
@@ -86,10 +85,13 @@ def list(args, task_data):
 # Update task description
 def update(args, task_data):
     # Verify that ID and description arguments are present and valid
-    if len(args) < 3:
+    task_id = args[1] if len(args) > 1 else None
+    new_description = args[2] if len(args) > 2 else None
+
+    if not task_id or not new_description:
         print("\nTask ID and new description are required arguments.")
         return
-    elif not (args[1]).isdigit():
+    elif not task_id.isdigit():
         print("\nTask ID must be an integer.")
         return
     
@@ -110,7 +112,8 @@ def update(args, task_data):
 # Mark task as in-progress
 def markInProgress(args, task_data):
     # Task ID is required
-    if len(args) < 2:
+    task_id = args[1] if len(args) > 1 else None
+    if not task_id:
         print("\nTask ID is a required argument.")
         return
     
@@ -131,7 +134,8 @@ def markInProgress(args, task_data):
 # Mark task as done
 def markDone(args, task_data):
     # Task ID is required
-    if len(args) < 2:
+    task_id = args[1] if len(args) > 1 else None
+    if not task_id:
         print("\nTask ID is a required argument.")
         return
     
@@ -152,7 +156,8 @@ def markDone(args, task_data):
 # Delete task
 def delete(args, task_data):
     # Task ID is required
-    if len(args) < 2:
+    task_id = args[1] if len(args) > 1 else None
+    if not task_id:
         print("\nTask ID is a required argument.")
         return
     
@@ -181,22 +186,13 @@ commands = {
 ## Create/open task list JSON file, and read the contents
 try:
     with open(TASKS_FILE, "r") as f:
-        task_string = f.read() # Read the entire file into a variable as a string
-        # Verify that the json file is not empty
-        if task_string != "":
-            task_data = json.loads(task_string) # Convert JSON string into a dict
-        else:
-            task_data = {
-                "next_id": 1, # Reset the next ID
-                "tasks": [] # If no task list exists, create an empty list
-            }
+        # Read the entire file into a variable as a string
+        task_string = f.read().strip()
+        # Verify that the json file is not empty, and reset it if it is
+        task_data = json.loads(task_string) if task_string else {"next_id": 1, "tasks": []}
 except FileNotFoundError:
-    with open(TASKS_FILE, "w"):
-        task_data = {
-                "next_id": 1, # Reset the next ID
-                "tasks": [] # If no task list exists, create an empty list
-            }
-        update_json_file(task_data)
+    task_data = {"next_id": 1, "tasks": []}
+    update_json_file(task_data)
 
 ## Accept user command line arguments
 args = sys.argv[1:] # sys.argv[0] is the script name. Arguments start at index 1

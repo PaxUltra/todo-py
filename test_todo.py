@@ -1,5 +1,5 @@
 import unittest
-from todo import add, update, mark_in_progress, mark_done, delete
+from todo import add, update, mark_in_progress, mark_done, delete, list_tasks
 
 class TestTodoFunctions(unittest.TestCase):
     def setUp(self):
@@ -164,6 +164,50 @@ class TestTodoFunctions(unittest.TestCase):
         delete(args_delete, self.task_data)
 
         self.assertEqual(len(self.task_data["tasks"]), 0)
+
+    def test_list_tasks(self):
+        add(["add", "Task 1"], self.task_data)
+        add(["add", "Task 2"], self.task_data)
+        add(["add", "Task 3"], self.task_data)
+        mark_in_progress(["mark-in-progress", "2"], self.task_data)
+        mark_done(["mark-done", "3"], self.task_data)
+
+        all_tasks = self.task_data["tasks"]
+        todo_tasks = [task for task in all_tasks if task["status"] == "todo"]
+        in_progress_tasks = [task for task in all_tasks if task["status"] == "in-progress"]
+        done_tasks = [task for task in all_tasks if task["status"] == "done"]
+
+        # If an invalid filter status is provided, an empty list should be returned
+        args_list = ["list", "dog"]
+        filtered_tasks = list_tasks(args_list, self.task_data)
+        self.assertEqual(filtered_tasks, [])
+
+        args_list = ["list", "123"]
+        filtered_tasks = list_tasks(args_list, self.task_data)
+        self.assertEqual(filtered_tasks, [])
+
+        args_list = ["list", "3.14"]
+        filtered_tasks = list_tasks(args_list, self.task_data)
+        self.assertEqual(filtered_tasks, [])
+
+        # If no filter is provided, all tasks should be returned
+        args_list = ["list"]
+        filtered_tasks = list_tasks(args_list, self.task_data)
+        self.assertEqual(filtered_tasks, all_tasks)
+
+        # If a filter status is provided, only applicable tasks should be returned
+        args_list = ["list", "todo"]
+        filtered_tasks = list_tasks(args_list, self.task_data)
+        self.assertEqual(filtered_tasks, todo_tasks)
+
+        args_list = ["list", "in-progress"]
+        filtered_tasks = list_tasks(args_list, self.task_data)
+        self.assertEqual(filtered_tasks, in_progress_tasks)
+
+        args_list = ["list", "done"]
+        filtered_tasks = list_tasks(args_list, self.task_data)
+        self.assertEqual(filtered_tasks, done_tasks)
+        
 
 if __name__ == '__main__':
     unittest.main()

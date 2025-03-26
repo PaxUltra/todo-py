@@ -67,14 +67,16 @@ def list_tasks(args, task_data):
 
     # If no arguments are provided, list all tasks
     if status_filter is None:
-        print_task_list(task_data["tasks"])
+        filtered_tasks = task_data["tasks"]
+        print_task_list(filtered_tasks)
     elif status_filter in valid_statuses:
         filtered_tasks = [task for task in task_data["tasks"] if task["status"] == status_filter]
         print_task_list(filtered_tasks)
     else:
+        filtered_tasks = []
         print("\nStatus must be either todo, done, or in-progress.")
 
-    return
+    return filtered_tasks
 
 # Update task description
 def update(args, task_data):

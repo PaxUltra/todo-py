@@ -1,3 +1,5 @@
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/PaxUltra/todo-py/ci.yml)
+
 # todo-py
 Simple Python CLI to-do list manager.
 

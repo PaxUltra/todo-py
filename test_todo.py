@@ -102,7 +102,30 @@ class TestTodoFunctions(unittest.TestCase):
     def test_mark_done(self):
         args_add = ["add", "Task to Complete"]
         add(args_add, self.task_data)
+        initial_data = self.task_data
         
+        # If ID is missing, the list should not change
+        args_no_id = ["mark-done"]
+        mark_done(args_no_id, self.task_data)
+        self.assertEqual(self.task_data, initial_data)
+
+        # If ID is invalid, the list should not change
+        invalid_id = "999"
+        args_invalid_id = ["mark-done", invalid_id]
+        mark_done(args_invalid_id, self.task_data)
+        self.assertEqual(self.task_data, initial_data)
+
+        invalid_id = "dog"
+        args_invalid_id = ["mark-done", invalid_id]
+        mark_done(args_invalid_id, self.task_data)
+        self.assertEqual(self.task_data, initial_data)
+
+        invalid_id = "3.14"
+        args_invalid_id = ["mark-done", invalid_id]
+        mark_done(args_invalid_id, self.task_data)
+        self.assertEqual(self.task_data, initial_data)
+
+        # Complete valid task
         task_id = str(self.task_data["tasks"][0]["id"])
         args_mark = ["mark-done", task_id]
         mark_done(args_mark, self.task_data)
@@ -112,7 +135,30 @@ class TestTodoFunctions(unittest.TestCase):
     def test_delete_task(self):
         args_add = ["add", "Task to Delete"]
         add(args_add, self.task_data)
+        initial_data = self.task_data
         
+        # If ID is missing, the list should not change
+        args_no_id = ["delete"]
+        delete(args_no_id, self.task_data)
+        self.assertEqual(self.task_data, initial_data)
+
+        # If ID is invalid, the list should not change
+        invalid_id = "999"
+        args_invalid_id = ["delete", invalid_id]
+        delete(args_invalid_id, self.task_data)
+        self.assertEqual(self.task_data, initial_data)
+
+        invalid_id = "dog"
+        args_invalid_id = ["delete", invalid_id]
+        delete(args_invalid_id, self.task_data)
+        self.assertEqual(self.task_data, initial_data)
+
+        invalid_id = "3.14"
+        args_invalid_id = ["delete", invalid_id]
+        delete(args_invalid_id, self.task_data)
+        self.assertEqual(self.task_data, initial_data)
+
+        # Valid deletion
         task_id = str(self.task_data["tasks"][0]["id"])
         args_delete = ["delete", task_id]
         delete(args_delete, self.task_data)

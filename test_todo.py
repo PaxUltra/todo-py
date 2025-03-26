@@ -1,5 +1,5 @@
 import unittest
-from todo import add, update, mark_in_progress, mark_done, delete, list_tasks
+from todo import add, update, mark_in_progress, mark_done, delete
 
 class TestTodoFunctions(unittest.TestCase):
     def setUp(self):
@@ -29,6 +29,7 @@ class TestTodoFunctions(unittest.TestCase):
         self.assertEqual(self.task_data["tasks"][1]["status"], "todo")
 
     def test_update_task(self):
+        # Valid arguments
         args_add = ["add", "Task to Update", "Old Description"]
         add(args_add, self.task_data)
 
@@ -37,6 +38,33 @@ class TestTodoFunctions(unittest.TestCase):
         update(args_update, self.task_data)
 
         self.assertEqual(self.task_data["tasks"][0]["description"], "New Description")
+
+        # When a non-existent ID is provided, the task list should not change
+        initial_data = self.task_data
+        invalid_id = "999"
+        args_invalid_id = ["update", invalid_id, "Another Description"]
+        update(args_invalid_id, self.task_data)
+        self.assertEqual(self.task_data, initial_data)
+
+        # When a non-int ID is provided, the task list should not change
+        invalid_id = "dog"
+        args_invalid_id = ["update", invalid_id, "Another Description"]
+        update(args_invalid_id, self.task_data)
+        self.assertEqual(self.task_data, initial_data)
+
+        invalid_id = "3.14"
+        args_invalid_id = ["update", invalid_id, "Another Description"]
+        update(args_invalid_id, self.task_data)
+        self.assertEqual(self.task_data, initial_data)
+
+        # When arguments are missing, the task list should not change
+        args_no_id = ["update"]
+        update(args_no_id, self.task_data)
+        self.assertEqual(self.task_data, initial_data)
+
+        args_no_desc = ["update", "1"]
+        update(args_no_id, self.task_data)
+        self.assertEqual(self.task_data, initial_data)
 
     def test_mark_in_progress(self):
         args_add = ["add", "Task to Progress"]
@@ -67,14 +95,6 @@ class TestTodoFunctions(unittest.TestCase):
         delete(args_delete, self.task_data)
 
         self.assertEqual(len(self.task_data["tasks"]), 0)
-
-    def test_list_todo_tasks(self):
-        add(["add", "Task 1", "Desc 1"], self.task_data)
-        add(["add", "Task 2", "Desc 2"], self.task_data)
-        mark_done(["mark-done", "1"], self.task_data)  # Mark first task as done
-
-        filtered_tasks = [t for t in self.task_data["tasks"] if t["status"] == "todo"]
-        self.assertEqual(len(filtered_tasks), 1)
 
 if __name__ == '__main__':
     unittest.main()

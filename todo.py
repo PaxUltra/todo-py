@@ -2,9 +2,6 @@ import sys # For accepting command line arguments
 import json
 from datetime import datetime
 
-## Constants
-TASKS_FILE = "tasks.json"
-
 ## Helper functions
 def update_json_file(task_data):
     with open(TASKS_FILE, "w") as f:
@@ -170,7 +167,9 @@ def delete(args, task_data):
 
     return
 
-commands = {
+## Constants
+TASKS_FILE = "tasks.json"
+COMMANDS = {
     "add": add,
     "list": list_tasks,
     "update": update,
@@ -196,7 +195,7 @@ if __name__ == "__main__":
     command = args[0] if args else None # The command will always be the first argument
 
     # Make sure the command exists
-    if not command or command not in commands:
+    if not command or command not in COMMANDS:
         print("\nError: Command not found.")
     else:
-        commands[command](args, task_data)
+        COMMANDS[command](args, task_data)

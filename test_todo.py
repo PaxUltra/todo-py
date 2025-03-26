@@ -1,10 +1,37 @@
 import unittest
-from todo import add, update, mark_in_progress, mark_done, delete, list_tasks
+from todo import add, update, mark_in_progress, mark_done, delete, list_tasks, find_task_by_id
 
 class TestTodoFunctions(unittest.TestCase):
     def setUp(self):
         # Runs before each test.
         self.task_data = {"next_id": 1, "tasks": []}
+
+    def test_find_task_by_id(self):
+        args = ["add", "Task 1", "Desc 1"]
+        add(args, self.task_data)
+        task = self.task_data["tasks"][0]
+
+        # If an invalid ID is provided, None should be returned
+        task_id = "999"
+        returned_task = find_task_by_id(task_id, self.task_data)
+        self.assertEqual(returned_task, None)
+
+        task_id = "dog"
+        returned_task = find_task_by_id(task_id, self.task_data)
+        self.assertEqual(returned_task, None)
+
+        task_id = "3.14"
+        returned_task = find_task_by_id(task_id, self.task_data)
+        self.assertEqual(returned_task, None)
+
+        task_id = 555
+        returned_task = find_task_by_id(task_id, self.task_data)
+        self.assertEqual(returned_task, None)
+
+        # A valid ID should return the correct task
+        task_id = task.get("id")
+        returned_task = find_task_by_id(task_id, self.task_data)
+        self.assertEqual(returned_task, task)
 
     def test_add_task(self):
         # If a task name is not provided, task_data should not grow
